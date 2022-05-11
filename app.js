@@ -5,7 +5,9 @@ const mongoose = require('mongoose')
 const {info,error} = require('./utils/logger')
 const Blog = require('./models/blog');
 const config = require('./utils/config')
+const blogRouter = require('./controllers/blogRoutes');
 
+info("connecting to port", config.PORT, '...')
 
 mongoose.connect(config.MONGO_URL)
  .then((result) => {
@@ -15,22 +17,6 @@ mongoose.connect(config.MONGO_URL)
 app.use(cors())
 app.use(express.json())
 
-app.get('/api/blogs', (request, response) => {
-  Blog
-    .find({})
-    .then(blogs => {
-      response.json(blogs)
-    })
-})
-
-app.post('/api/blogs', (request, response) => {
-  const blog = new Blog(request.body)
-
-  blog
-    .save()
-    .then(result => {
-      response.status(201).json(result)
-    })
-})
+app.use('/api/blogs', blogRouter)
 
 module.exports = app
