@@ -11,12 +11,8 @@ const totalLikes = (blogs) => {
 }
 
 const favoriteBlog = (blog) => {
-    console.log("before is",blog.map(a => a.likes) )
     const preArray = blog.map(a => a.likes)
-    console.log("Math max thing is", Math.max(...preArray))
     const objArr = Math.max(...preArray)
-
-    console.log("objArr is",objArr)
 
     const favBlog = blog.filter((x) => x.likes == objArr);
     const favBlogObj = favBlog[0]
@@ -25,11 +21,12 @@ const favoriteBlog = (blog) => {
     delete favBlogObj.__v;
     delete favBlogObj.url;
 
-    console.log("Fav blog is now",favBlog)
-
-
     return favBlogObj
 
+}
+
+const mostBlogs = (blogs) => {
+    
 }
 
 module.exports = {

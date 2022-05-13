@@ -1,8 +1,13 @@
-require('dotenv');
+require('dotenv').config()
 
 
-const PORT = 3003
-const MONGO_URL = 'mongodb+srv://phonebook:InYourFace27@cluster0.3ejqz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+
+const PORT = process.env.PORT
+// const MONGO_URL = process.env.MONGO_URL
+
+const MONGO_URL = process.env.NODE_ENV === "test"
+    ? process.env.TEST_MONGO_URL
+    : process.env.MONGO_URL
 
 module.exports = {
     PORT,
