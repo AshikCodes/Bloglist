@@ -58,6 +58,27 @@ describe('blog tests', () => {
         expect(filteredArr).toContain('Node patterns')
         
     })
+
+    test('verify if likes property is missing', async () => {
+        const newBlog = {
+            title: "Jest patterns",
+            author: "Cool Chan",
+            url: "https://fregrferfref.com/"
+            }
+
+            if(newBlog.likes == null){
+                newBlog.likes = 0;
+            }
+
+            console.log("newBlog is", newBlog)
+
+            const blogs = await api.post('/api/blogs').send(newBlog)
+            console.log("blogs is",blogs)
+            const blogList = await api.get('/api/blogs')
+            console.log("blogList is",blogList)
+
+            expect(blogList).toBe(5)
+    })
 })
 
 afterAll(() => {
