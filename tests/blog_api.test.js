@@ -87,6 +87,11 @@ describe('blog tests', () => {
             }
         const result = await api.post('/api/blogs').send(newBlog).expect(400)
     })
+
+    test('test if deleting blog works', async () => {
+        const id = '6287d6b60d80048e9ea7ff00'
+        const result = await api.delete(`/api/blogs/${id}`).expect(JSON.stringify("Successfully deleted blog"))
+    })
 })
 
 afterAll(() => {
