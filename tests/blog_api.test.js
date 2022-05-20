@@ -70,14 +70,14 @@ describe('blog tests', () => {
                 newBlog.likes = 0;
             }
 
-            console.log("newBlog is", newBlog)
-
             const blogs = await api.post('/api/blogs').send(newBlog)
-            console.log("blogs is",blogs)
             const blogList = await api.get('/api/blogs')
-            console.log("blogList is",blogList)
 
-            expect(blogList).toBe(5)
+            const blogBody = blogList._body
+
+            const checkBlog = blogBody.filter((blog) => {return blog.title == newBlog.title})
+
+            expect(checkBlog[0].likes).toEqual(0)
     })
 })
 
