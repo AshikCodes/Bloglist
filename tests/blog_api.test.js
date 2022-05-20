@@ -79,6 +79,14 @@ describe('blog tests', () => {
 
             expect(checkBlog[0].likes).toEqual(0)
     })
+
+    test('if title and url props missing send 400 err', async () => {
+        const newBlog = {
+            author: "Cool Chan",
+            likes:250
+            }
+        const result = await api.post('/api/blogs').send(newBlog).expect(400)
+    })
 })
 
 afterAll(() => {

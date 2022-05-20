@@ -11,12 +11,18 @@ blogRouter.get('/', (request, response) => {
   
   blogRouter.post('/', (request, response) => {
     const blog = new Blog(request.body)
-  
-    blog
+
+    if (blog.title == null && blog.url == null){
+      response.status(400)
+      res.end()
+    }
+    else{
+      blog
       .save()
       .then(result => {
         response.status(201).json(result)
       })
+    }
   })
 
   module.exports = blogRouter
