@@ -6,6 +6,7 @@ const {info,error} = require('./utils/logger')
 const Blog = require('./models/blog');
 const config = require('./utils/config')
 const blogRouter = require('./controllers/blogRoutes');
+const userRouter = require('./controllers/userRoutes')
 const middleware = require('./utils/middleware')
 
 info("connecting to port", config.PORT, '...')
@@ -20,6 +21,7 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 
 app.use('/api/blogs', blogRouter)
+app.use('/api/users',userRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
