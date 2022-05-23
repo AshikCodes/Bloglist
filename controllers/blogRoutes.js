@@ -24,6 +24,9 @@ blogRouter.get('/', (request, response) => {
         console.log("Saved to database!!!!!")
         response.status(201).json(result)
       })
+      .catch(error => {
+        console.log("Could not save to database")
+      })
     }
   })
 

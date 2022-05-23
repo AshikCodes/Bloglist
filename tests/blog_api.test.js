@@ -72,7 +72,7 @@ describe('blog tests', () => {
                 newBlog.likes = 0;
             }
 
-            const blogs = await api.post('/api/blogs').send(newBlog).expect(201)
+            const blogs = await api.post('/api/blogs').send(newBlog)
             const blogList = await api.get('/api/blogs')
 
             const blogBody = blogList._body
@@ -96,6 +96,9 @@ describe('blog tests', () => {
     })
 
     test('test to update blog', async () => {
+        const blogList = await api.get('/api/blogs')
+
+        console.log("BLOGLIST IS", blogList._body)
         const id = '6289724d4ac29adc0e306841'
         const newBlog = {
             likes: 15
@@ -107,8 +110,9 @@ describe('blog tests', () => {
 
 afterAll(() => {
     mongoose.connection.close()
-},100000)
+})
 
+//100000
 //npm test -- tests/blog_api.test.js --silent=false
 
 //npm test -- tests/blog_api.test.js --verbose false

@@ -55,14 +55,14 @@ describe('user tests', () => {
         const sameUser = 
         {
             username: "as",
-            password: "xs2",
+            password: "xx2",
             name:"Mark"
         }
 
         const notSaved = await api.post('/api/users').send(sameUser).expect(400)
         const users = await api.get('/api/users')
         expect(users._body).toHaveLength(1)
-    })
+    },)
 
 })
 
@@ -71,4 +71,7 @@ afterAll(() => {
 },100000)
 
 
+
 //npm test -- tests/blog_user.test.js --silent=false
+
+//npm test -- -t 'returns 400 error if username/password is too short'

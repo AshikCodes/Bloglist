@@ -15,14 +15,16 @@ const unknownEndpoint = (req,res) => {
 
 const errorHandler = (error,request,res,next) => {
     info(error.message)
+    info("Error name is", error.name)
 
     if (error.name === 'CastError') {
+        console.log("cast error")
         return response.status(400).send({ error: 'malformatted id' })
       }
     
     if (error.name === 'ValidationError') {
         console.log("Got here")
-        return response.status(400).send({ error: 'Username must be bigger than 3 characters'})
+        return res.status(400).send({ error: 'Username must be bigger than 3 characters'})
     }
     
       next(error)
