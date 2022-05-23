@@ -21,6 +21,7 @@ blogRouter.get('/', (request, response) => {
       blog
       .save()
       .then(result => {
+        console.log("Saved to database!!!!!")
         response.status(201).json(result)
       })
     }

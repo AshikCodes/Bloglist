@@ -18,7 +18,12 @@ const errorHandler = (error,request,res,next) => {
 
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
-      } 
+      }
+    
+    if (error.name === 'ValidationError') {
+        console.log("Got here")
+        return response.status(400).send({ error: 'Username must be bigger than 3 characters'})
+    }
     
       next(error)
 

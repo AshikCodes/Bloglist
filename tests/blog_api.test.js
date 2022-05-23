@@ -53,6 +53,8 @@ describe('blog tests', () => {
             }
         const result = await api.post('/api/blogs').send(newBlog).expect(201)
         const secondResult = await api.get('/api/blogs')
+
+        console.log("Second result is", secondResult._body)
         const filteredArr = secondResult._body.map(a => a.title);
         expect(secondResult._body).toHaveLength(initalBlogs.length + 1)
         expect(filteredArr).toContain('Node patterns')
@@ -70,7 +72,7 @@ describe('blog tests', () => {
                 newBlog.likes = 0;
             }
 
-            const blogs = await api.post('/api/blogs').send(newBlog)
+            const blogs = await api.post('/api/blogs').send(newBlog).expect(201)
             const blogList = await api.get('/api/blogs')
 
             const blogBody = blogList._body
