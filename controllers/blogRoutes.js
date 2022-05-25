@@ -1,25 +1,46 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 
 blogRouter.get('/', (request, response) => {
     Blog
-      .find({})
+      .find({}).populate('user', {username: 1, name: 1})
       .then(blogs => {
         response.status(200).json(blogs)
       })
   })
   
-  blogRouter.post('/', (request, response) => {
-    const blog = new Blog(request.body)
+  blogRouter.post('/', async (request, response) => {
+    console.log("Request body of blog is",request.body)
+    
+    const rand = await User.aggregate([{ $sample: {size: 1}}]) //returns array
 
-    if (blog.title == null && blog.url == null){
+    const body = request.body
+
+    var userId = rand[0]._id.toString()
+    var user = await User.findById(userId)
+
+    const newBlog = new Blog({
+      title: body.title,
+      author:body.author,
+      url: body.url,
+      likes: body.likes,
+      user: user._id
+
+    })
+
+
+    console.log("newBlog is",newBlog)
+
+    if (newBlog.title == null && newBlog.url == null){
       response.status(400)
       res.end()
     }
     else{
-      blog
-      .save()
+      newBlog.save()
+      user.blog = user.blog.concat(newBlog._id)
+      user.save()
       .then(result => {
         console.log("Saved to database!!!!!")
         response.status(201).json(result)

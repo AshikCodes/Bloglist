@@ -47,7 +47,8 @@ if(password.length >= 3){
 })
 
 userRouter.get('/', async(request,response) => {
-    const users = await User.find({})
+    // console.log("rand id", rand)
+    const users = await User.find({}).populate('blog', {title: 1, author: 1})
     response.status(201).json(users)
 })
 
