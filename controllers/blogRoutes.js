@@ -1,6 +1,9 @@
 const blogRouter = require('express').Router();
+const req = require('express/lib/request');
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 
 blogRouter.get('/', (request, response) => {
@@ -13,13 +16,16 @@ blogRouter.get('/', (request, response) => {
   
   blogRouter.post('/', async (request, response) => {
     console.log("Request body of blog is",request.body)
-    
-    const rand = await User.aggregate([{ $sample: {size: 1}}]) //returns array
+
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+    if(!decodedToken.id){
+      response.status(401).json({error: "token missing or invalid"})
+    }
 
     const body = request.body
 
-    var userId = rand[0]._id.toString()
-    var user = await User.findById(userId)
+    var user = await User.findById(decodedToken.id)
 
     const newBlog = new Blog({
       title: body.title,
