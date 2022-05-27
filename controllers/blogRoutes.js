@@ -2,7 +2,8 @@ const blogRouter = require('express').Router();
 const req = require('express/lib/request');
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { default: mongoose } = require('mongoose');
 require('dotenv').config()
 
 
@@ -60,12 +61,20 @@ blogRouter.get('/', (request, response) => {
   blogRouter.delete('/:id', async (request,response) => {
     const id = request.params.id
 
-    try{
-      const deletedBlog = await Blog.findByIdAndDelete(id)
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    
+    if(!decodedToken.id){
+      response.status(404).json({error: "token missing or invalid"})
+    }
+
+    const blog = await Blog.findById(id)
+
+    if(blog.user.toString() == decodedToken.id){
+      const deletedBlog = await Blog.findByIdAndDelete(blog)
       response.json("Successfully deleted blog")
     }
-    catch {
-      response.json("Error deleting blog")
+    else {
+      response.status(401).json("Error, only creator can delete")
     }
     
   })
