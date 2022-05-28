@@ -26,7 +26,7 @@ blogRouter.get('/', (request, response) => {
 
     const body = request.body
 
-    var user = await User.findById(decodedToken.id)
+    var user = request.user
 
     const newBlog = new Blog({
       title: body.title,
@@ -68,8 +68,9 @@ blogRouter.get('/', (request, response) => {
     }
 
     const blog = await Blog.findById(id)
+    const user = request.user
 
-    if(blog.user.toString() == decodedToken.id){
+    if(blog.user.toString() == user._id.toString()){
       const deletedBlog = await Blog.findByIdAndDelete(blog)
       response.json("Successfully deleted blog")
     }
