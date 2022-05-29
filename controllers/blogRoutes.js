@@ -4,6 +4,7 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken');
 const { default: mongoose } = require('mongoose');
+const { decode } = require('jsonwebtoken');
 require('dotenv').config()
 
 
@@ -17,24 +18,33 @@ blogRouter.get('/', (request, response) => {
   
   blogRouter.post('/', async (request, response) => {
     console.log("Request body of blog is",request.body)
+    var user = request.user
+    console.log("User is", user)
 
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-    if(!decodedToken.id){
-      response.status(401).json({error: "token missing or invalid"})
+    try{
+      const decodedToken = jwt.verify(request.token, process.env.SECRET)
+      console.log("decodedToken is", decodedToken)
+    }
+    catch(err){
+      if(!request.token || !decodedToken.id){
+        console.log("got in the catch block")
+        response.status(401).json({error: "token missing or invalid"})
+      }
+      else {
+        console.log(err)
+      }
     }
 
     const body = request.body
 
-    var user = request.user
 
     const newBlog = new Blog({
       title: body.title,
       author:body.author,
       url: body.url,
       likes: body.likes,
-      user: user._id
-
+      // user: user._id
+      user: user == null ? null : user._id
     })
 
 
@@ -42,12 +52,12 @@ blogRouter.get('/', (request, response) => {
 
     if (newBlog.title == null && newBlog.url == null){
       response.status(400)
-      res.end()
+      response.end()
     }
     else{
       newBlog.save()
-      user.blog = user.blog.concat(newBlog._id)
-      user.save()
+      user == null ? null : user.blog = user.blog.concat(newBlog._id)
+      user == null ? null : user.save()
       .then(result => {
         console.log("Saved to database!!!!!")
         response.status(201).json(result)
@@ -60,15 +70,26 @@ blogRouter.get('/', (request, response) => {
 
   blogRouter.delete('/:id', async (request,response) => {
     const id = request.params.id
-
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    
-    if(!decodedToken.id){
-      response.status(404).json({error: "token missing or invalid"})
-    }
-
-    const blog = await Blog.findById(id)
     const user = request.user
+
+    try {
+      const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    }
+    catch(err){
+      if(!request.user || !request.token || !decodedToken.id){
+        response.status(404).json({error: "token missing or invalid"})
+      }
+      else{
+        console.log(err)
+      }
+    }
+    
+    
+    const blog = await Blog.findById(id)
+    
+
+    console.log("Blog is", blog)
+    console.log("User is", user)
 
     if(blog.user.toString() == user._id.toString()){
       const deletedBlog = await Blog.findByIdAndDelete(blog)
