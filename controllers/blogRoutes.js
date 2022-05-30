@@ -28,11 +28,12 @@ blogRouter.get('/', (request, response) => {
     catch(err){
       if(!request.token || !decodedToken.id){
         console.log("got in the catch block")
-        response.status(401).json({error: "token missing or invalid"})
+        return response.status(401).json({error: "token missing or invalid"})
       }
       else {
         console.log(err)
       }
+      response.end()
     }
 
     const body = request.body
@@ -43,8 +44,8 @@ blogRouter.get('/', (request, response) => {
       author:body.author,
       url: body.url,
       likes: body.likes,
-      // user: user._id
-      user: user == null ? null : user._id
+      user: user._id
+      // user: user == null ? null : user._id
     })
 
 
@@ -56,8 +57,11 @@ blogRouter.get('/', (request, response) => {
     }
     else{
       newBlog.save()
-      user == null ? null : user.blog = user.blog.concat(newBlog._id)
-      user == null ? null : user.save()
+      // user == null ? null : user.blog = user.blog.concat(newBlog._id)
+      // user == null ? null : user.save()
+      user.blog = user.blog.concat(newBlog._id)
+      user.save()
+
       .then(result => {
         console.log("Saved to database!!!!!")
         response.status(201).json(result)
