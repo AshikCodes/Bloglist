@@ -70,7 +70,7 @@ const mostLikes = (blog) => {
     var maxIndex = 0;
     for(let i = 0; i < blog.length; i++){
         if(blog[i].likes > max){
-            maxIndex = 1;
+            maxIndex = i;
             max = blog[i]
         }
     }
